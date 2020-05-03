@@ -20,7 +20,7 @@ form.addEventListener("submit", (e) => {
 });
 
 const createMove = async (value) => {
-  await client.service("moves").create({ move: value });
+  value !== '' && await client.service("moves").create({ move: value });
 };
 
 client.service("moves").on("created",  (data) => {
