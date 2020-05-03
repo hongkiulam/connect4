@@ -1,4 +1,4 @@
-# connect-4-websocket
+# connect-4-websocket-server
 
 > 
 
