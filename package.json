@@ -26,9 +26,9 @@
   "scripts": {
     "test": "npm run compile && npm run jest",
     "dev": "ts-node-dev --no-notify src/",
-    "start": "npm run compile && node lib/",
+    "start": "node lib/",
     "jest": "jest  --forceExit",
-    "compile": "rm -rf lib/ && npm run tsc",
+    "postinstall": "rm -rf lib/ && npm run tsc",
     "tsc": "tsc",
     "shx":"shx"
   },
