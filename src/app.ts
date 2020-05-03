@@ -24,25 +24,13 @@ const app: Application = express(feathers());
 app.configure(configuration());
 // Enable security, CORS, compression, favicon and body parsing
 app.use(helmet());
-// app.use(cors());
+app.use(cors());
 app.use(compress());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
-    // Add this
-    if (req.method === 'OPTIONS') {
-
-        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, OPTIONS');
-        res.header('Access-Control-Max-Age', '120');
-        return res.status(200).json({});
-    }
-
-    next();
-
-});
+app.use(favicon(path.join(app.get('public'), 'favicon.ico')));
+// Host the public folder
+app.use('/', express.static(app.get('public')));
 // Set up Plugins and providers
 
 app.configure(socketio());
