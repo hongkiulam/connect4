@@ -28,7 +28,9 @@
     "dev": "ts-node-dev --no-notify src/",
     "start": "npm run compile && node lib/",
     "jest": "jest  --forceExit",
-    "compile": "shx rm -rf lib/ && tsc"
+    "compile": "npm run shx -- rm -rf lib/ && npm run tsc",
+    "tsc": "tsc",
+    "shx":"shx"
   },
   "standard": {
     "env": [
