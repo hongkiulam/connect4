@@ -27,3 +27,17 @@ client.service("moves").on("created",  (data) => {
   console.log(data.move);
   moveList.innerHTML += `<li>${data.move}</li>`
 });
+
+const initialPopulate = async ()=>{
+const initial = await client.service("moves").find({
+  query: {
+    $limit: 99,
+  },
+});
+console.log(initial.data);
+initial.data.forEach((data)=>{
+    moveList.innerHTML += `<li>${data.move}</li>`;
+
+})
+}
+initialPopulate();

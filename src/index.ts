@@ -16,6 +16,8 @@ const main = async ()=>{
   await app.service('moves').create({move:'hi'});
   await app.service('moves').create({move:'world'});
 
+  const find = await app.service('moves').find();
+  console.log(find.data);
 }
 app.service('moves').on('created',(data)=>{
   console.log(data.move, data.id)

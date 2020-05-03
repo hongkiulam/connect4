@@ -16,7 +16,6 @@ export default function (app: Application) {
 
   // publish all data to anonymous
   app.publish((data: any, hook: HookContext) => {
-    console.log(data, hook);
     return app.channel("anonymous");
   });
 
