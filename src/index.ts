@@ -12,12 +12,6 @@ server.on('listening', () =>
   logger.info('Feathers application started on http://%s:%d', app.get('host'), port)
 );
 
-const main = async ()=>{
-  await app.service('moves').create({move:'hi'});
-  await app.service('moves').create({move:'world'});
-
-}
 app.service('moves').on('created', (data)=>{
   console.log('this was just created -->',data)
 })
-main();

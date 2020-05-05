@@ -1,43 +1,32 @@
 // Establish a Socket.io connection
-const socket = io();
+const socket = io('localhost:3030');
 // Initialize our Feathers client application through Socket.io
 // with hooks and authentication.
-
 const client = feathers();
-
 client.configure(feathers.socketio(socket));
 
-const form = document.querySelector(".form");
-const input = document.querySelector(".input");
-const button = document.querySelector("button");
-const moveList = document.querySelector(".moveList");
+// socket io listeners
+client.io.on('playerConnected',(data)=>{
+  console.table(data)
+})
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const value = input.value;
-  createMove(value);
-  input.value = "";
-});
+client.io.on('playerDisconnected', (data)=>{
+  console.table(data);
+})
 
-const createMove = async (value) => {
-  value !== '' && await client.service("moves").create({ move: value });
+client.io.on('allPlayers', (data)=>{
+  console.log(data);
+  playerCount.innerText = data.length 
+})
+
+// variables
+const moves = client.service('moves');
+const playerCount = document.querySelector('.playerCount');
+
+
+const createMove = async () => {
+ await moves.create({ move: value });
 };
 
-client.service("moves").on("created",  (data) => {
-  console.log(data.move);
-  moveList.innerHTML += `<li>${data.move}</li>`
+moves.on("created",  (data) => {
 });
-
-const initialPopulate = async ()=>{
-const initial = await client.service("moves").find({
-  query: {
-    $limit: 99,
-  },
-});
-console.log(initial.data);
-initial.data.forEach((data)=>{
-    moveList.innerHTML += `<li>${data.move}</li>`;
-
-})
-}
-initialPopulate();

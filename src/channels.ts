@@ -10,9 +10,15 @@ export default function (app: Application) {
   }
 
   app.on("connection", (connection: any) => {
+    console.log('FEATHERS CONNECTION ><');
     // On a new real-time connection, add it to the anonymous channel
     if (app.channel("anonymous").length < 2) {
       app.channel("anonymous").join(connection);
+      console.log('ANONYMOUS CHANNEL ><')
+    }
+    else{
+      app.channel('queue').join(connection);
+      console.log('IN QUEUE <>')
     }
   });
 
