@@ -21,7 +21,9 @@ export default function (app: Application) {
       console.log('IN QUEUE <>')
     }
   });
-
+  app.on('disconnect', ()=>{
+    console.log('FEATHERS DISCONNECT >/<')
+  })
   // publish all data to anonymous
   app.publish((data: any, hook: HookContext) => {
     return app.channel("anonymous");

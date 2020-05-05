@@ -5,6 +5,11 @@ const socket = io();
 const client = feathers();
 client.configure(feathers.socketio(socket));
 
+// variables
+const moves = client.service('moves');
+const playerTextOne = document.querySelector('.playerText.one');
+const playerTextTwo = document.querySelector('.playerText.two');
+
 // socket io listeners
 client.io.on('playerConnected',(data)=>{
   console.table(data)
@@ -15,13 +20,10 @@ client.io.on('playerDisconnected', (data)=>{
 })
 
 client.io.on('allPlayers', (data)=>{
-  console.log(data);
-  playerCount.innerText = data.length 
+  console.log(data.length);
+  data.length >= 1 ? playerTextOne.style.opacity = "1" : playerTextOne.style.opacity = "0.1";
+  data.length == 2 ? playerTextTwo.style.opacity = "1" : playerTextTwo.style.opacity = "0.1";
 })
-
-// variables
-const moves = client.service('moves');
-const playerCount = document.querySelector('.playerCount');
 
 
 const createMove = async () => {
