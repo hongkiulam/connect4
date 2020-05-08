@@ -6,14 +6,14 @@
   box-sizing: border-box;
 }
 
-:root{
+:root {
   --dark: #262626;
-  --light:#ccc;
-  --faded:#999;
-  --accent:#bf8416;
+  --light: #ccc;
+  --faded: #999;
+  --accent: #bf8416;
   --paddingS: 0.5em;
   --padding: 1em;
-  --paddingL:2em;
+  --paddingL: 2em;
 }
 html,
 body {
@@ -25,46 +25,54 @@ body {
   width: 100vw;
   height: 100vh;
 }
+.root {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom right, var(--dark), #111);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .wrapper {
   display: grid;
   grid-template-rows: 1fr 7fr 1fr;
-  grid-template-areas: 
-  "title"
-  "game"
-  "info"
-  ;
+  grid-template-areas:
+    "title"
+    "game"
+    "info";
   place-items: center;
   width: 100%;
   height: 100%;
   background: linear-gradient(to bottom right, var(--dark), #111);
 }
 
-.title{
+.title {
   font-weight: 300;
   font-size: 1.2em;
 }
-.game_wrapper{
-  width:350px;
-  height:350px;
+.game_wrapper {
+  width: 350px;
+  height: 350px;
   box-shadow: 0px 0px 5px var(--faded);
 }
-.info{
+.info {
   grid-area: info;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-areas: "left right";
   place-items: center;
 }
-.playerText{
-  color:var(--faded);
-  padding:var(--paddingS);
+.playerText {
+  color: var(--faded);
+  padding: var(--paddingS);
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
-  opacity:0.1;
-  &.one{
+  opacity: 0.1;
+  &.one {
   }
-  &:hover{
-    color:var(--accent);
+  &:hover {
+    color: var(--accent);
     border-bottom: 2px solid var(--accent);
   }
 }

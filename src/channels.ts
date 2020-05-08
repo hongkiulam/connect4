@@ -10,23 +10,28 @@ export default function (app: Application) {
   }
 
   app.on("connection", (connection: any) => {
-    console.log('FEATHERS CONNECTION ><');
+    console.log("SOMEONE CONNECTED ><");
     // On a new real-time connection, add it to the anonymous channel
-    if (app.channel("anonymous").length < 2) {
-      app.channel("anonymous").join(connection);
-      console.log('ANONYMOUS CHANNEL ><')
-    }
-    else{
-      app.channel('queue').join(connection);
-      console.log('IN QUEUE <>')
-    }
+    app.channel("anonymous").join(connection);
+    console.log("ANONYMOUS CHANNEL ><");
+
+    app.service("rooms").on("created", (data) => {
+      const { roomId } = data;
+      app.channel("anonymous").leave(connection);
+      app.channel(roomId).join(connection);
+      console.log("JOINED" + roomId);
+    });
   });
-  app.on('disconnect', ()=>{
-    console.log('FEATHERS DISCONNECT >/<')
-  })
+  app.on("disconnect", () => {
+    console.log("FEATHERS DISCONNECT >/<");
+  });
   // publish all data to anonymous
   app.publish((data: any, hook: HookContext) => {
     return app.channel("anonymous");
+  });
+
+  app.service("moves").publish((data) => {
+    return app.channel(data.roomId);
   });
 
   // THIS IS FOR LOGIN AND AUTHENTICATION WHICH I WILL NOT DO FOR NOW
