@@ -8,12 +8,30 @@
 
 :root {
   --dark: #262626;
-  --light:#ccc;
-  --faded:#999;
-  --accent:#bf8416;
+  --light: #ccc;
+  --faded: #999;
+  --accent: #bf8416;
   --paddingS: 0.5em;
   --padding: 1em;
-  --paddingL:2em;
+  --paddingL: 2em;
+}
+
+input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--accent);
+  font: inherit;
+  color: inherit;
+  padding: var(--paddingS);
+  font-size: 0.8em;
+}
+
+button {
+  background: transparent;
+  border: none;
+  font: inherit;
+  text-transform: uppercase;
+  color: inherit;
 }
 
 html,
@@ -25,6 +43,75 @@ body {
   color: var(--light);
   width: 100vw;
   height: 100vh;
+}
+
+.root {
+  width: 100%;
+  height: 100%;
+  background: -webkit-gradient(linear, left top, right bottom, from(var(--dark)), to(#111));
+  background: linear-gradient(to bottom right, var(--dark), #111);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.room_full_error {
+  color: var(--faded);
+  margin-top: var(--padding);
+}
+
+.go_back_btn {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.go_back_arrow {
+  width: 30px;
+  margin-right: var(--paddingS);
+  -webkit-transform: rotateZ(180deg);
+          transform: rotateZ(180deg);
+}
+
+.join_room_form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.join_room_btn {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-top: var(--padding);
+}
+
+.join_arrow {
+  margin-left: var(--paddingS);
+  width: 30px;
 }
 
 .wrapper {
