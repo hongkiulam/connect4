@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Overpass:wght@300;400&display=swap");
 
+//Globals
 * {
   margin: 0;
   padding: 0;
@@ -14,6 +15,23 @@
   --paddingS: 0.5em;
   --padding: 1em;
   --paddingL: 2em;
+}
+
+input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--accent);
+  font: inherit;
+  color: inherit;
+  padding: var(--paddingS);
+  font-size: 0.8em;
+}
+button {
+  background: transparent;
+  border: none;
+  font: inherit;
+  text-transform: uppercase;
+  color: inherit;
 }
 html,
 body {
@@ -33,6 +51,34 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.room_full_error {
+  color: var(--faded);
+  margin-top: var(--padding);
+}
+.go_back_btn {
+  display: flex;
+  align-items: center;
+}
+.go_back_arrow {
+  width: 30px;
+  margin-right: var(--paddingS);
+  transform: rotateZ(180deg);
+}
+.join_room_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.join_room_btn {
+  display: flex;
+  align-items: center;
+  margin-top: var(--padding);
+}
+.join_arrow {
+  margin-left: var(--paddingS);
+  width: 30px;
 }
 .wrapper {
   display: grid;

@@ -16,6 +16,24 @@
   --paddingL: 2em;
 }
 
+input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--accent);
+  font: inherit;
+  color: inherit;
+  padding: var(--paddingS);
+  font-size: 0.8em;
+}
+
+button {
+  background: transparent;
+  border: none;
+  font: inherit;
+  text-transform: uppercase;
+  color: inherit;
+}
+
 html,
 body {
   font-family: "Overpass", sans-serif;
@@ -45,6 +63,55 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+}
+
+.room_full_error {
+  color: var(--faded);
+  margin-top: var(--padding);
+}
+
+.go_back_btn {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.go_back_arrow {
+  width: 30px;
+  margin-right: var(--paddingS);
+  -webkit-transform: rotateZ(180deg);
+          transform: rotateZ(180deg);
+}
+
+.join_room_form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.join_room_btn {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin-top: var(--padding);
+}
+
+.join_arrow {
+  margin-left: var(--paddingS);
+  width: 30px;
 }
 
 .wrapper {
