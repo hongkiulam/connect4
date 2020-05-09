@@ -1,6 +1,7 @@
 import express from "express";
 import http from "http";
 import socketio from "socket.io";
+import path from "path";
 
 const app = express();
 const server = new http.Server(app);
@@ -11,7 +12,7 @@ server.listen(process.env.PORT || 3000);
 app.use(express.static("public"));
 
 app.get("/*", (req, res) => {
-  res.sendFile("public/index.html");
+  res.sendFile(path.join(__dirname, "../public", "index.html"));
 });
 
 io.on("connection", (socket) => {
