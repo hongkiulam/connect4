@@ -6,7 +6,7 @@ const app = express();
 const server = new http.Server(app);
 const io = socketio(server);
 
-server.listen(3000);
+server.listen(process.env.PORT || 3000);
 
 app.use(express.static("public"));
 
