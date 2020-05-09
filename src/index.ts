@@ -33,6 +33,16 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("updateWhoseTurn", ({ whoseTurn, roomId }) => {
+    const nextWhoseTurn = whoseTurn === 1 ? 2 : 1;
+    io.to(roomId).emit("updateWhoseTurn", nextWhoseTurn);
+  });
+
+  socket.on("droppedDisc", ({ discId, roomId }) => {
+    console.log(discId);
+    io.to(roomId).emit("droppedDisc", discId);
+  });
+
   socket.on("disconnecting", () => {
     const roomId = Object.keys(socket.rooms)[0];
     io.to(roomId).emit("thisRoom", ["oneplayerleft"]);

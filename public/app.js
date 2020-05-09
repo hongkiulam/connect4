@@ -1,18 +1,4 @@
-// VIEWS
-const gamePage = `<div class="wrapper">
-<h1 class="title"><a href="/">cnct 4</a></h1>
-<div class="game_wrapper"></div>
-<div class="info">
-  <span class="playerText one selected">player 1</span>
-  <span class="playerText two">player 2</span>
-</div>
-</div>`;
-
-const landingPage = `<form class="join_room_form">
-<input type="text" class="room_id_input" autofocus />
-<button type="submit" class="join_room_btn" onclick="(e)=>{e.preventDefault();}"><span>join</span> <img class="join_arrow" src="./arrow.svg" /></button>
-</form>
-`;
+import { gamePage, landingPage } from "./views.js";
 
 // >> Establish a Socket.io connection
 const socket = io();
@@ -31,10 +17,8 @@ const renderLandingPage = () => {
   const roomIdInput = document.querySelector(".room_id_input");
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(roomIdInput);
-    const desiredRoom = roomIdInput.value.toLowerCase();
+    const desiredRoom = roomIdInput.value.toLowerCase().replace(" ", "-");
     window.location.href = window.location.origin + "/" + desiredRoom;
-    console.log("Joined ", desiredRoom);
   };
   joinRoomForm.addEventListener("submit", handleSubmit);
 };
@@ -46,36 +30,47 @@ const renderGamePage = () => {
 };
 
 // >> Router
-if (roomId == "/") {
-  renderLandingPage();
-} else {
-  renderGamePage();
-}
+window.addEventListener("load", () => {
+  if (roomId == "/") {
+    renderLandingPage();
+  } else {
+    renderGamePage();
+  }
+});
 
-// >> Socket io listeners
+// >> Socket io listeners (global)
 
 socket.on("joinedRoom", (message) => {
-  console.log(message);
+  console.log(`%c ${message}`, "color:lightblue");
 });
 socket.on("playerConnected", (message) => {
-  console.log(message);
+  console.log(`%c ${message}`, "color:lightblue");
 });
 socket.on("thisRoom", (thisRoom) => {
-  console.log(`Players in room : ${thisRoom.length}`);
+  console.log(`%c Players in room : ${thisRoom.length}`, "color:lightblue");
   thisRoom.length >= 1
     ? (playerTextOne.style.opacity = "1")
     : (playerTextOne.style.opacity = "0.1");
   thisRoom.length == 2
     ? (playerTextTwo.style.opacity = "1")
     : (playerTextTwo.style.opacity = "0.1");
+  if (thisRoom.length == 2) {
+    const gameWrapper = document.querySelector(".game_wrapper");
+    gameWrapper.innerHTML = `<span class="game_loading">> starting game <</span>`;
+    setTimeout(gameInit, 500);
+  }
 });
 // bug, if two are connected and player one refreshes, both are now player two
-socket.on("currentPlayer", (currentPlayer) => {
-  currentPlayer = currentPlayer;
-  console.log(`I am player ${currentPlayer}`);
+socket.on("currentPlayer", (player) => {
+  currentPlayer = player;
+  const title = document.querySelector(".title a");
+  title.textContent =
+    currentPlayer == 1 ? "cnct 4 | player 1" : "cnct 4 | player 2";
+  // globally have a nickname variable, emitted with the room event, and then received through another event.
+  // update innerText of relevant playerText here
 });
 socket.on("roomIsFull", () => {
-  console.log(`${roomId} is full`);
+  console.warn(`${roomId} is full`);
   root.innerHTML = `
   <span class="room_full_error">room is full</span>
   <button class="go_back_btn"><img class="go_back_arrow" src="./arrow.svg" />go back</button>
@@ -86,3 +81,76 @@ socket.on("roomIsFull", () => {
     window.location.pathname = "/";
   });
 });
+
+// >> Game
+const gameInit = () => {
+  console.log("%c Game Started", "color:green");
+  const gameState = {
+    /**
+     * @param col x
+     * @param row y
+     */
+    gameField: [
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0],
+    ],
+    whoseTurn: 1,
+    generateField: () => {
+      const gameWrapper = document.querySelector(".game_wrapper");
+      gameWrapper.innerHTML = "";
+      // generate playing field
+      gameState.gameField.forEach((col, colIndex) => {
+        col.forEach((row, rowIndex) => {
+          gameWrapper.innerHTML += `<div class="cell" id="${colIndex}-${rowIndex}" data-col="${colIndex}" data-row="${rowIndex}"></div>`;
+        });
+      });
+      // addeventlistener
+      document.querySelectorAll(".cell").forEach((cell) => {
+        cell.addEventListener("click", (e) => {
+          if (currentPlayer == gameState.whoseTurn) {
+            const { col, row } = e.target.dataset;
+            console.log(`%c Clicked ${col}-${row}`, "color:orange");
+            // tell server to flip whoseTurn
+            socket.emit("updateWhoseTurn", {
+              whoseTurn: gameState.whoseTurn,
+              roomId,
+            });
+            gameState.dropDisc(col, row);
+          } else {
+            console.warn("Not your turn");
+          }
+        });
+      });
+    },
+    updatePlayerText: () => {
+      if (gameState.whoseTurn == 1) {
+        playerTextOne.classList.add("selected");
+        playerTextTwo.classList.remove("selected");
+      }
+      if (gameState.whoseTurn == 2) {
+        playerTextTwo.classList.add("selected");
+        playerTextOne.classList.remove("selected");
+      }
+    },
+    dropDisc: (col, row) => {
+      // dropped disc logic here
+      // pass disc to fill into event
+      socket.emit("droppedDisc", { discId: `${col}-${row}`, roomId });
+    },
+  };
+  gameState.generateField();
+  gameState.updatePlayerText();
+  socket.on("updateWhoseTurn", (nextWhoseTurn) => {
+    gameState.whoseTurn = nextWhoseTurn;
+    gameState.updatePlayerText();
+  });
+  socket.on("droppedDisc", (discId) => {
+    const disc = document.getElementById(discId);
+    disc.style.backgroundColor = "var(--accent)";
+  });
+};
