@@ -1,6 +1,6 @@
 // VIEWS
 const gamePage = `<div class="wrapper">
-<h1 class="title">cnct 4</h1>
+<h1 class="title"><a href="/">cnct 4</a></h1>
 <div class="game_wrapper"></div>
 <div class="info">
   <span class="playerText one selected">player 1</span>

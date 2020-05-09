@@ -132,6 +132,11 @@ body {
   font-size: 1.2em;
 }
 
+.title a {
+  text-decoration: none;
+  color: inherit;
+}
+
 .game_wrapper {
   width: 350px;
   height: 350px;

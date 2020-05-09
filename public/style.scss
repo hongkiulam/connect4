@@ -96,6 +96,10 @@ body {
 .title {
   font-weight: 300;
   font-size: 1.2em;
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 .game_wrapper {
   width: 350px;
