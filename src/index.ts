@@ -11,7 +11,7 @@ server.listen(3000);
 app.use(express.static("public"));
 
 app.get("/*", (req, res) => {
-  res.sendfile("public/index.html");
+  res.sendFile("public/index.html");
 });
 
 io.on("connection", (socket) => {
