@@ -38,9 +38,8 @@ io.on("connection", (socket) => {
     io.to(roomId).emit("updateWhoseTurn", nextWhoseTurn);
   });
 
-  socket.on("droppedDisc", ({ discId, roomId }) => {
-    console.log(discId);
-    io.to(roomId).emit("droppedDisc", discId);
+  socket.on("droppedDisc", ({ row, col, player, roomId }) => {
+    io.to(roomId).emit("droppedDisc", { col, row, player });
   });
 
   socket.on("disconnecting", () => {

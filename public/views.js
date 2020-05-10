@@ -1,7 +1,12 @@
 // >> Views
 const gamePage = `<div class="wrapper">
 <h1 class="title"><a href="/">cnct 4</a></h1>
+<span class="subheading"></span>
+<div class="game_aspect_ratio">
+<div class="game_aspect_ratio_padding">
 <div class="game_wrapper"><span class="game_loading">it's a bit lonely here...</span></div>
+</div>
+</div>
 <div class="info">
   <span class="playerText one">player 1</span>
   <span class="playerText two">player 2</span>

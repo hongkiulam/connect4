@@ -1,5 +1,9 @@
 import { gamePage, landingPage } from "./views.js";
-
+/* 
+TODO PWA
+player has won logic
+audiocontext
+*/
 // >> Establish a Socket.io connection
 const socket = io();
 
@@ -60,12 +64,14 @@ socket.on("thisRoom", (thisRoom) => {
     setTimeout(gameInit, 500);
   }
 });
-// bug, if two are connected and player one refreshes, both are now player two
+
 socket.on("currentPlayer", (player) => {
   currentPlayer = player;
-  const title = document.querySelector(".title a");
-  title.textContent =
-    currentPlayer == 1 ? "cnct 4 | player 1" : "cnct 4 | player 2";
+  const subheading = document.querySelector(".subheading");
+  subheading.textContent =
+    currentPlayer == 1
+      ? "- connected as: player 1 -"
+      : "- connected as: player 2 -";
   // globally have a nickname variable, emitted with the room event, and then received through another event.
   // update innerText of relevant playerText here
 });
@@ -120,9 +126,14 @@ const gameInit = () => {
               whoseTurn: gameState.whoseTurn,
               roomId,
             });
-            gameState.dropDisc(col, row);
+            gameState.dropDisc(parseInt(col), parseInt(row), currentPlayer);
           } else {
             console.warn("Not your turn");
+            const gameWrapper = document.querySelector(".game_wrapper");
+            gameWrapper.classList.add("flashRed");
+            setTimeout(() => {
+              gameWrapper.classList.remove("flashRed");
+            }, 550);
           }
         });
       });
@@ -137,20 +148,97 @@ const gameInit = () => {
         playerTextOne.classList.remove("selected");
       }
     },
-    dropDisc: (col, row) => {
+    dropDisc: (col, row, currentPlayer) => {
       // dropped disc logic here
       // pass disc to fill into event
-      socket.emit("droppedDisc", { discId: `${col}-${row}`, roomId });
+      let rowToFill = row;
+      gameState.gameField[col].forEach((row, index) => {
+        if (row == 0) {
+          rowToFill = index;
+        }
+      });
+      socket.emit("droppedDisc", {
+        col,
+        row: rowToFill,
+        player: currentPlayer,
+        roomId,
+      });
+    },
+    checkWin: (col, row) => {
+      console.log("%c Checking for win...", "color:orange");
+      if (
+        gameState.getAdj(col, row, 0, 1) + gameState.getAdj(col, row, 0, -1) >
+        2
+      ) {
+        return true;
+      } else {
+        if (gameState.getAdj(col, row, 1, 0) > 2) {
+          return true;
+        } else {
+          if (
+            gameState.getAdj(col, row, -1, 1) +
+              gameState.getAdj(col, row, 1, -1) >
+            2
+          ) {
+            return true;
+          } else {
+            if (
+              gameState.getAdj(col, row, 1, 1) +
+                gameState.getAdj(col, row, -1, -1) >
+              2
+            ) {
+              return true;
+            } else {
+              return false;
+            }
+          }
+        }
+      }
+    },
+    getAdj: (col, row, colIncrement, rowIncrement) => {
+      if (
+        gameState.cellVal(col, row) ==
+        gameState.cellVal(col + colIncrement, row + rowIncrement)
+      ) {
+        return (
+          1 +
+          gameState.getAdj(
+            col + colIncrement,
+            row + rowIncrement,
+            colIncrement,
+            rowIncrement
+          )
+        );
+      } else {
+        return 0;
+      }
+    },
+    cellVal: (col, row) => {
+      const gF = gameState.gameField;
+      if (gF[col] == undefined || gF[col][row] == undefined) {
+        return -1;
+      } else {
+        return gF[col][row];
+      }
+    },
+    playerHasWon: (player) => {
+      console.log("Player Has Won!", player);
     },
   };
   gameState.generateField();
   gameState.updatePlayerText();
+
   socket.on("updateWhoseTurn", (nextWhoseTurn) => {
     gameState.whoseTurn = nextWhoseTurn;
     gameState.updatePlayerText();
   });
-  socket.on("droppedDisc", (discId) => {
-    const disc = document.getElementById(discId);
-    disc.style.backgroundColor = "var(--accent)";
+  socket.on("droppedDisc", ({ col, row, player }) => {
+    const colorToFill = player == 1 ? "var(--playerOne)" : "var(--playerTwo)";
+    const disc = document.getElementById(`${col}-${row}`);
+    disc.style.backgroundColor = colorToFill;
+    gameState.gameField[col][row] = player;
+    if (gameState.checkWin(col, row)) {
+      gameState.playerHasWon(player);
+    }
   });
 };
