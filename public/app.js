@@ -13,7 +13,6 @@ let playerTextOne;
 let playerTextTwo;
 let roomId = window.location.pathname.toLowerCase();
 let currentPlayer;
-
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 // >> Render Pages                      >> //
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
@@ -24,7 +23,7 @@ const renderLandingPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const desiredRoom = roomIdInput.value.toLowerCase().replace(" ", "-");
-    window.location.href = window.location.origin + "/" + desiredRoom;
+    window.location.pathname = desiredRoom;
   };
   joinRoomForm.addEventListener("submit", handleSubmit);
 };
