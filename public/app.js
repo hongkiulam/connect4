@@ -39,7 +39,7 @@ const renderGamePage = () => {
 // >> Router                            >> //
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 window.addEventListener("load", () => {
-  if (roomId == "/") {
+  if (roomId == "/" || roomId == "/index.html") {
     renderLandingPage();
   } else {
     renderGamePage();
