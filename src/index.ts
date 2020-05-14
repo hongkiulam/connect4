@@ -33,6 +33,10 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("randomiseWhoseTurn", ({ randomWhoseTurn, roomId }) => {
+    socket.to(roomId).emit("randomiseWhoseTurn", randomWhoseTurn);
+  });
+
   socket.on("updateWhoseTurn", ({ whoseTurn, roomId }) => {
     const nextWhoseTurn = whoseTurn === 1 ? 2 : 1;
     io.to(roomId).emit("updateWhoseTurn", nextWhoseTurn);

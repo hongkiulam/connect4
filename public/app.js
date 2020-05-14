@@ -1,20 +1,22 @@
 import { gamePage, landingPage } from "./views.js";
 /* 
 TODO PWA
-player has won logic
 audiocontext
 */
-// >> Establish a Socket.io connection
-const socket = io();
 
-// >> Variables
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+// >> Global Variables                  >> //
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+
 const root = document.querySelector(".root");
 let playerTextOne;
 let playerTextTwo;
 let roomId = window.location.pathname.toLowerCase();
 let currentPlayer;
 
-// >> Render pages
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+// >> Render Pages                      >> //
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 const renderLandingPage = () => {
   root.innerHTML = landingPage;
   const joinRoomForm = document.querySelector(".join_room_form");
@@ -33,7 +35,9 @@ const renderGamePage = () => {
   socket.emit("room", roomId);
 };
 
-// >> Router
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+// >> Router                            >> //
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 window.addEventListener("load", () => {
   if (roomId == "/") {
     renderLandingPage();
@@ -42,7 +46,11 @@ window.addEventListener("load", () => {
   }
 });
 
-// >> Socket io listeners (global)
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+// >> Establish a Socket.io connection  >> //
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+
+const socket = io();
 
 socket.on("joinedRoom", (message) => {
   console.log(`%c ${message}`, "color:lightblue");
@@ -88,7 +96,9 @@ socket.on("roomIsFull", () => {
   });
 });
 
-// >> Game
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+// >> Game                              >> //
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 const gameInit = () => {
   console.log("%c Game Started", "color:green");
   const gameState = {
@@ -107,6 +117,12 @@ const gameInit = () => {
     ],
     whoseTurn: 1,
     generateField: () => {
+      // player 1 creates random whoseTurn and syncs with player 2
+      if (currentPlayer == 1) {
+        const randomWhoseTurn = Math.floor(Math.random() * 2) + 1;
+        gameState.whoseTurn = randomWhoseTurn;
+        socket.emit("randomiseWhoseTurn", { randomWhoseTurn, roomId });
+      }
       const gameWrapper = document.querySelector(".game_wrapper");
       gameWrapper.innerHTML = "";
       // generate playing field
@@ -115,27 +131,31 @@ const gameInit = () => {
           gameWrapper.innerHTML += `<div class="cell" id="${colIndex}-${rowIndex}" data-col="${colIndex}" data-row="${rowIndex}"></div>`;
         });
       });
-      // addeventlistener
+      const handleCellClick = (e) => {
+        if (currentPlayer == gameState.whoseTurn) {
+          const { col, row } = e.target.dataset;
+          console.log(`%c Clicked ${col}-${row}`, "color:orange");
+          // tell server to flip whoseTurn
+          socket.emit("updateWhoseTurn", {
+            whoseTurn: gameState.whoseTurn,
+            roomId,
+          });
+          gameState.dropDisc(parseInt(col), parseInt(row), currentPlayer);
+        } else {
+          console.warn("Not your turn");
+          const gameWrapper = document.querySelector(".game_wrapper");
+          gameWrapper.classList.add("flashRed");
+          setTimeout(() => {
+            gameWrapper.classList.remove("flashRed");
+          }, 550);
+        }
+      };
+      // handle event listeners
       document.querySelectorAll(".cell").forEach((cell) => {
-        cell.addEventListener("click", (e) => {
-          if (currentPlayer == gameState.whoseTurn) {
-            const { col, row } = e.target.dataset;
-            console.log(`%c Clicked ${col}-${row}`, "color:orange");
-            // tell server to flip whoseTurn
-            socket.emit("updateWhoseTurn", {
-              whoseTurn: gameState.whoseTurn,
-              roomId,
-            });
-            gameState.dropDisc(parseInt(col), parseInt(row), currentPlayer);
-          } else {
-            console.warn("Not your turn");
-            const gameWrapper = document.querySelector(".game_wrapper");
-            gameWrapper.classList.add("flashRed");
-            setTimeout(() => {
-              gameWrapper.classList.remove("flashRed");
-            }, 550);
-          }
-        });
+        // remove old eventlistener if game was previously initiated
+        cell.removeEventListener("click", handleCellClick);
+        // add event listener
+        cell.addEventListener("click", handleCellClick);
       });
     },
     updatePlayerText: () => {
@@ -222,12 +242,28 @@ const gameInit = () => {
       }
     },
     playerHasWon: (player) => {
-      console.log("Player Has Won!", player);
+      alert(`Player ${player} Has Won! \nRestarting Game...`);
+      gameState.gameField = [
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0],
+      ];
+      gameState.generateField();
     },
   };
+
+  // Start Game
   gameState.generateField();
   gameState.updatePlayerText();
 
+  socket.on("randomiseWhoseTurn", (randomWhoseTurn) => {
+    gameState.whoseTurn = randomWhoseTurn;
+    gameState.updatePlayerText();
+  });
   socket.on("updateWhoseTurn", (nextWhoseTurn) => {
     gameState.whoseTurn = nextWhoseTurn;
     gameState.updatePlayerText();
@@ -237,8 +273,11 @@ const gameInit = () => {
     const disc = document.getElementById(`${col}-${row}`);
     disc.style.backgroundColor = colorToFill;
     gameState.gameField[col][row] = player;
+    // Check for win condition
     if (gameState.checkWin(col, row)) {
-      gameState.playerHasWon(player);
+      setTimeout(() => {
+        gameState.playerHasWon(player);
+      }, 300);
     }
   });
 };
