@@ -18,6 +18,11 @@
   --padding: 1em;
   --paddingL: 2em;
 }
+noscript {
+  p {
+    position: absolute;
+  }
+}
 
 input {
   background: transparent;
