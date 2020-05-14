@@ -33,8 +33,9 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("randomiseWhoseTurn", ({ randomWhoseTurn, roomId }) => {
-    socket.to(roomId).emit("randomiseWhoseTurn", randomWhoseTurn);
+  socket.on("randomiseWhoseTurn", ({ roomId }) => {
+    const randomWhoseTurn = Math.floor(Math.random() * 2) + 1;
+    io.to(roomId).emit("randomiseWhoseTurn", randomWhoseTurn);
   });
 
   socket.on("updateWhoseTurn", ({ whoseTurn, roomId }) => {

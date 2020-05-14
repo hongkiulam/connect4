@@ -117,12 +117,9 @@ const gameInit = () => {
     ],
     whoseTurn: 1,
     generateField: () => {
-      // player 1 creates random whoseTurn and syncs with player 2
-      if (currentPlayer == 1) {
-        const randomWhoseTurn = Math.floor(Math.random() * 2) + 1;
-        gameState.whoseTurn = randomWhoseTurn;
-        socket.emit("randomiseWhoseTurn", { randomWhoseTurn, roomId });
-      }
+      // generate randomwhoseturn and sync up with other player, will prioritise last to send
+      socket.emit("randomiseWhoseTurn", { roomId });
+
       const gameWrapper = document.querySelector(".game_wrapper");
       gameWrapper.innerHTML = "";
       // generate playing field
