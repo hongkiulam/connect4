@@ -114,23 +114,10 @@ body {
   color: var(--faded);
   font-size: 0.8em;
 }
-.game_aspect_ratio {
-  max-width: 350px;
-  max-height: 300px;
-  width: 90%;
-  height: auto;
-}
-.game_aspect_ratio_padding {
-  width: 100%;
-  padding-top: calc(100% * (6 / 7));
-  position: relative;
-}
+
 .game_wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  height: 300px;
+  width: 350px;
   padding: var(--paddingS);
   box-shadow: 0px 0px 5px var(--faded);
   display: grid;
@@ -142,6 +129,12 @@ body {
   border-radius: 10px;
   &.flashRed {
     animation: flashRed 0.5s ease;
+  }
+}
+@media only screen and(max-width:400px) {
+  .game_wrapper {
+    width: 280px;
+    height: 240px;
   }
 }
 

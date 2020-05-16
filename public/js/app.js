@@ -1,8 +1,6 @@
 import { gamePage, landingPage } from "./views.js";
-/* 
-TODO PWA
-audiocontext
-*/
+/*
+ */
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 // >> Global Variables                  >> //
@@ -86,7 +84,7 @@ socket.on("roomIsFull", () => {
   console.warn(`${roomId} is full`);
   root.innerHTML = `
   <span class="room_full_error">room is full</span>
-  <button class="go_back_btn"><img class="go_back_arrow" src="./arrow.svg" />go back</button>
+  <button class="go_back_btn"><img class="go_back_arrow" src="./img/arrow.svg" />go back</button>
   `;
   const goBackBtn = document.querySelector(".go_back_btn");
   goBackBtn.addEventListener("click", (e) => {
@@ -94,6 +92,14 @@ socket.on("roomIsFull", () => {
     window.location.pathname = "/";
   });
 });
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+// >> Audio                             >> //
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
+
+const discAudio = new Audio("./sounds/disc.mp3");
+const winAudio = new Audio("./sounds/win.mp3");
+const loseAudio = new Audio("./sounds/lose.wav");
 
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> //
 // >> Game                              >> //
@@ -188,7 +194,10 @@ const gameInit = () => {
       ) {
         return true;
       } else {
-        if (gameState.getAdj(col, row, 1, 0) > 2) {
+        if (
+          gameState.getAdj(col, row, 1, 0) + gameState.getAdj(col, row, -1, 0) >
+          2
+        ) {
           return true;
         } else {
           if (
@@ -238,6 +247,7 @@ const gameInit = () => {
       }
     },
     playerHasWon: (player) => {
+      player == currentPlayer ? winAudio.play() : loseAudio.play();
       alert(`Player ${player} Has Won! \nRestarting Game...`);
       gameState.gameField = [
         [0, 0, 0, 0, 0, 0],
@@ -265,6 +275,7 @@ const gameInit = () => {
     gameState.updatePlayerText();
   });
   socket.on("droppedDisc", ({ col, row, player }) => {
+    discAudio.play();
     const colorToFill = player == 1 ? "var(--playerOne)" : "var(--playerTwo)";
     const disc = document.getElementById(`${col}-${row}`);
     disc.style.backgroundColor = colorToFill;

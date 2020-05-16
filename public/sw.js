@@ -2,10 +2,10 @@ let cacheName = "connect-4-hkl";
 let filesToCache = [
   "/",
   "/index.html",
-  "/style.css",
-  "/app.js",
-  "/views.js",
-  "/arrow.svg",
+  "/css/style.css",
+  "/js/app.js",
+  "/js/views.js",
+  "/img/arrow.svg",
 ];
 
 /* Start the service worker and cache all of the app's content */
