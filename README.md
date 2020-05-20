@@ -1,45 +1,20 @@
-# connect-4-websocket-server
+# CNCT 4
 
-> 
+## Connect 4 two player game with rooms!
 
-## About
+#### Node.js, Express, Socket.IO, Typescript, PWA
 
-This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
+Deployed on heroku [here](https://connect-4-server.herokuapp.com)
 
-## Getting Started
+> Learning websockets and creating rooms was the main goal of this project, and rooms were created by accessing `window.location.pathname` and using that string to create a room with Socket.IO.
+> Each room is restricted to 2 players only by simply counting the players in the room before allowing a new player to join.
 
-Getting up and running is as easy as 1, 2, 3.
+> The UI is inspired by Minimalista Playing Cards
 
-1. Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
-2. Install your dependencies
+##### Development
 
-    ```
-    cd path/to/connect-4-websocket
-    npm install
-    ```
+`npm run dev` executes `ts-node` on `server.ts` to run the server locally.
 
-3. Start your app
+##### Deployment
 
-    ```
-    npm start
-    ```
-
-## Testing
-
-Simply run `npm test` and all your tests in the `test/` directory will be run.
-
-## Scaffolding
-
-Feathers has a powerful command line interface. Here are a few things it can do:
-
-```
-$ npm install -g @feathersjs/cli          # Install Feathers CLI
-
-$ feathers generate service               # Generate a new Service
-$ feathers generate hook                  # Generate a new Hook
-$ feathers help                           # Show all commands
-```
-
-## Help
-
-For more information on all the things you can do with Feathers visit [docs.feathersjs.com](http://docs.feathersjs.com).
+When deploying to heroku, `npm install` is run on every rebuild. Thus we can run `tsc` on `postinstall` to transpile the Typescript into Javscript on deployment.
